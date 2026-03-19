@@ -1,0 +1,87 @@
+# Unified Listener Configuration
+# Copy this file to config.yaml and fill in your values.
+# DO NOT commit config.yaml to git — it contains secrets.
+
+discord:
+  bot_token: "YOUR_DISCORD_BOT_TOKEN"
+  bot_user_id: "YOUR_BOT_USER_ID"
+
+  # === ROUTING ===
+  # Controls what triggers injection into Claude Desktop from "log" channels.
+  # "route" channels ALWAYS inject regardless of this setting.
+  #
+  # Options:
+  #   "mentions_only" — Only @mentions of your bot trigger injection (default)
+  #   "name_match"    — Inject when any trigger_names appear in the message
+  #   "keywords"      — Inject when any keyword from the list appears
+  #   "all"           — Everything injects (use sparingly!)
+  routing:
+    mode: "mentions_only"
+
+    # For "name_match" mode — inject when these names appear in a message
+    # Case-insensitive. Add your companion's name and any nicknames.
+    trigger_names:
+      - "YourCompanion"
+      - "yourcompanion"
+
+    # For "keywords" mode — inject when any of these appear
+    # Useful for custom triggers like "hey Sable" or "urgent"
+    keywords:
+      - "hey YourCompanion"
+
+  # === SERVERS ===
+  # Servers to watch. Add your server IDs and a friendly name.
+  # Find server IDs: Right-click server icon > Copy Server ID (enable Developer Mode in Discord settings)
+  servers:
+    "123456789012345678": "my-private-server"
+    "987654321098765432": "my-community-server"
+
+  # === CHANNELS ===
+  # Channel configuration. Each channel needs an ID, name, server, and priority.
+  #
+  # Priority levels:
+  #   "route" — ALWAYS inject into Claude Desktop immediately.
+  #             Use for private channels, DMs with your companion, or channels
+  #             where every message matters.
+  #   "log"   — Write to event log only. Messages are injected ONLY if they
+  #             match the routing mode above (mention, name, keyword).
+  #             Use for community channels where you only want relevant messages.
+  #
+  # Find channel IDs: Right-click channel name > Copy Channel ID
+  channels:
+    # Private server — route everything
+    "111111111111111111":
+      name: "general"
+      server: "my-private-server"
+      priority: "route"
+    "222222222222222222":
+      name: "companion-notes"
+      server: "my-private-server"
+      priority: "route"
+
+    # Community server — log by default, route on match
+    "333333333333333333":
+      name: "companion-support"
+      server: "my-community-server"
+      priority: "log"           # Only injects on @mention/name/keyword match
+    "444444444444444444":
+      name: "general-chat"
+      server: "my-community-server"
+      priority: "log"
+
+telegram:
+  bot_token: "YOUR_TELEGRAM_BOT_TOKEN"
+  chat_id: "YOUR_TELEGRAM_CHAT_ID"
+
+# === HOLD MECHANISM ===
+# After injecting a message, the AHK script waits this many seconds before
+# allowing the next injection. Prevents interrupting Claude mid-response.
+hold:
+  cooldown_seconds: 45
+
+# === EVENT LOG ===
+# Where Discord events get logged. Your companion can read this on wake
+# instead of pulling full message history — saves context window and API calls.
+event_log:
+  path: "listener-events.jsonl"     # Relative to script directory
+  max_content_length: 200           # Max chars logged per message
