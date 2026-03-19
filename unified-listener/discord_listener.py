@@ -49,6 +49,7 @@ _routing = _discord_config.get("routing", {})
 ROUTING_MODE = _routing.get("mode", "mentions_only")
 TRIGGER_NAMES = [n.lower() for n in _routing.get("trigger_names", [])]
 TRIGGER_KEYWORDS = [k.lower() for k in _routing.get("keywords", [])]
+ROUTE_REPLIES_TO_SELF = _routing.get("route_replies_to_self", False)
 
 # Event log config
 _event_config = _config.get("event_log", {})
@@ -204,6 +205,17 @@ class DiscordListener(discord.Client):
         if is_bot and len(content) < 5:
             return
         
+        # Check if this is a reply to one of our messages
+        is_reply_to_self = False
+        if ROUTE_REPLIES_TO_SELF and message.reference and message.reference.message_id:
+            try:
+                ref_msg = await message.channel.fetch_message(message.reference.message_id)
+                if str(ref_msg.author.id) == BOT_USER_ID:
+                    is_reply_to_self = True
+                    priority = "route"
+            except Exception:
+                pass  # Referenced message unavailable, skip
+        
         # Check if message should be upgraded from log → route
         mentions_sable = should_route_message(content, BOT_USER_ID)
         if mentions_sable:
@@ -211,7 +223,7 @@ class DiscordListener(discord.Client):
         
         # Log every event regardless of priority
         log_event("discord", server_name, channel_name, author_name, 
-                  content, priority, mentions_sable)
+                  content, priority, mentions_sable or is_reply_to_self)
         
         log(f"[{server_name}/{channel_name}] {author_name}: {content[:60]}... (priority: {priority})")
         
