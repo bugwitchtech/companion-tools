@@ -1,0 +1,34 @@
+# Secrets
+config.yaml
+.env
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# State files
+telegram_state.json
+telegram_flag.txt
+telegram_incoming.txt
+listener_flag.txt
+listener_incoming.txt
+busy.txt
+pause.txt
+poller.log
+discord_listener.log
+
+# Event log (contains message content)
+listener-events.jsonl
+
+# Legacy/internal directories
+legacy-docs/
+telegram-mcp/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Media directories
+TelegramPhotos/
+TelegramVoice/
