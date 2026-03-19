@@ -18,6 +18,12 @@ discord:
   routing:
     mode: "mentions_only"
 
+    # Always inject when someone replies to your companion's messages?
+    # This means if your companion posts in companion-support and someone
+    # replies, the reply gets injected even if the channel is set to "log".
+    # Highly recommended — lets your companion be part of conversations they started.
+    route_replies_to_self: true
+
     # For "name_match" mode — inject when these names appear in a message
     # Case-insensitive. Add your companion's name and any nicknames.
     trigger_names:
