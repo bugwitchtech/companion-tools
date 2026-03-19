@@ -20,7 +20,7 @@ Your companion can hear Discord and Telegram in real time — without scheduled 
 - `unified_listener.py` — Main daemon. Watches Telegram via long-polling, launches Discord listener in a background thread. Both streams write to the same flag file mechanism.
 - `discord_listener.py` — Discord gateway client (discord.py). Connects as your bot, watches configured servers/channels, filters by priority, logs all events, routes @mentions for injection.
 - `listener_injector.ahk` — AHK v1 script. Watches for flag files, injects messages into the active Claude Desktop window. Includes a cooldown hold mechanism to prevent injection during active responses.
-- `listener-events.jsonl` — Compact event log. Every Discord message from watched channels gets logged here with timestamp, channel, author, and first 200 chars. Your companion can read this on wake instead of making Discord API calls — massive context savings.
+- `listener-events.jsonl` — (auto-generated, not in repo) Compact event log. Every Discord message from watched channels gets logged here with timestamp, channel, author, and first 200 chars. Created automatically when the listener runs. Your companion can read this on wake instead of making Discord API calls — massive context savings.`
 
 **Two Priority Levels:**
 - `route` — Inject into Claude Desktop immediately (direct @mentions, private server messages)
